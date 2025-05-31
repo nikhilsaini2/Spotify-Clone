@@ -79,7 +79,7 @@
   }
 
   .spotify-card {
-    @apply bg-spotify-medium-gray hover:bg-opacity-80 transition-all duration-300 rounded-lg p-4 cursor-pointer group;
+    @apply bg-spotify-medium-gray hover:bg-opacity-80 transition-all duration-300 rounded-lg p-4 cursor-pointer;
   }
 
   .spotify-button {

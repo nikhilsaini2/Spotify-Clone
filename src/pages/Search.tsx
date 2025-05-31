@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Search as SearchIcon } from 'lucide-react';
+import { Search as SearchIcon, AlertCircle, Music } from 'lucide-react';
 import { musicApi } from '../services/musicApi';
 import { Track, Artist, Album } from '../types/music';
 import TrackList from '../components/TrackList';
@@ -13,6 +13,7 @@ const Search = () => {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'tracks' | 'artists' | 'albums'>('all');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -31,7 +32,8 @@ const Search = () => {
 
   const searchSuggestions = [
     'trending hits', 'top charts', 'new releases', 'popular songs',
-    'electronic music', 'hip hop beats', 'acoustic covers', 'jazz classics'
+    'electronic music', 'hip hop beats', 'acoustic covers', 'jazz classics',
+    'Blinding Lights', 'Watermelon Sugar', 'Levitating', 'Good 4 U', 'Stay'
   ];
 
   useEffect(() => {
@@ -42,13 +44,17 @@ const Search = () => {
 
       searchTimeoutRef.current = setTimeout(async () => {
         setLoading(true);
+        setError(null);
         try {
+          console.log('Searching for:', query);
           const results = await musicApi.search(query);
+          console.log('Search results:', results);
           setTracks(results.tracks);
           setArtists(results.artists);
           setAlbums(results.albums);
         } catch (error) {
           console.error('Search failed:', error);
+          setError('Search failed. Please try again.');
         } finally {
           setLoading(false);
         }
@@ -57,6 +63,7 @@ const Search = () => {
       setTracks([]);
       setArtists([]);
       setAlbums([]);
+      setError(null);
     }
 
     return () => {
@@ -88,6 +95,7 @@ const Search = () => {
 
   const handleGenreClick = async (genreId: string, genreName: string) => {
     setLoading(true);
+    setError(null);
     try {
       const results = await musicApi.search(genreName);
       setTracks(results.tracks);
@@ -97,6 +105,7 @@ const Search = () => {
       setActiveTab('all');
     } catch (error) {
       console.error('Genre search failed:', error);
+      setError('Failed to load genre content. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -141,6 +150,14 @@ const Search = () => {
               </div>
             )}
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mt-4 p-4 bg-red-900 bg-opacity-50 border border-red-600 rounded-lg flex items-center space-x-3">
+              <AlertCircle className="text-red-400" size={20} />
+              <span className="text-red-200">{error}</span>
+            </div>
+          )}
         </div>
 
         {!query.trim() ? (
@@ -167,7 +184,7 @@ const Search = () => {
               <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-spotify-green mx-auto mb-4"></div>
-                  <p className="text-white">Searching...</p>
+                  <p className="text-white">Searching for "{query}"...</p>
                 </div>
               </div>
             ) : hasResults ? (
@@ -176,9 +193,9 @@ const Search = () => {
                 <div className="flex space-x-6 mb-8">
                   {[
                     { key: 'all', label: 'All' },
-                    { key: 'tracks', label: 'Songs' },
-                    { key: 'artists', label: 'Artists' },
-                    { key: 'albums', label: 'Albums' }
+                    { key: 'tracks', label: `Songs (${tracks.length})` },
+                    { key: 'artists', label: `Artists (${artists.length})` },
+                    { key: 'albums', label: `Albums (${albums.length})` }
                   ].map((tab) => (
                     <button
                       key={tab.key}
@@ -205,7 +222,7 @@ const Search = () => {
                           onClick={() => setActiveTab('tracks')}
                           className="mt-4 text-spotify-light-gray hover:text-white text-sm font-bold hover:underline"
                         >
-                          Show all songs
+                          Show all {tracks.length} songs
                         </button>
                       )}
                     </section>
@@ -224,7 +241,7 @@ const Search = () => {
                           onClick={() => setActiveTab('artists')}
                           className="mt-4 text-spotify-light-gray hover:text-white text-sm font-bold hover:underline"
                         >
-                          Show all artists
+                          Show all {artists.length} artists
                         </button>
                       )}
                     </section>
@@ -243,7 +260,7 @@ const Search = () => {
                           onClick={() => setActiveTab('albums')}
                           className="mt-4 text-spotify-light-gray hover:text-white text-sm font-bold hover:underline"
                         >
-                          Show all albums
+                          Show all {albums.length} albums
                         </button>
                       )}
                     </section>
@@ -252,9 +269,15 @@ const Search = () => {
               </div>
             ) : (
               <div className="text-center py-20">
-                <SearchIcon size={64} className="text-spotify-light-gray mx-auto mb-4" />
+                <Music size={64} className="text-spotify-light-gray mx-auto mb-4" />
                 <h3 className="text-white text-xl font-bold mb-2">No results found for "{query}"</h3>
-                <p className="text-spotify-light-gray">Please make sure your words are spelled correctly or use less or different keywords.</p>
+                <p className="text-spotify-light-gray mb-4">Please try different keywords or check your spelling.</p>
+                <button
+                  onClick={() => setQuery('')}
+                  className="text-spotify-green hover:text-white font-bold hover:underline"
+                >
+                  Browse all music
+                </button>
               </div>
             )}
           </div>

@@ -26,19 +26,32 @@ const TrackList: React.FC<TrackListProps> = ({
   };
 
   const handlePlayTrack = (track: Track, index: number) => {
+    console.log('Track clicked:', track.title, 'by', track.artist.name);
+    
     if (state.currentTrack?.id === track.id) {
       if (state.isPlaying) {
+        console.log('Pausing current track');
         pauseTrack();
       } else {
+        console.log('Resuming current track');
         resumeTrack();
       }
     } else {
+      console.log('Playing new track:', track);
       playTrack(track, tracks, index);
     }
   };
 
   const isCurrentTrack = (trackId: string) => state.currentTrack?.id === trackId;
   const isPlaying = (trackId: string) => isCurrentTrack(trackId) && state.isPlaying;
+
+  if (tracks.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-spotify-light-gray">No tracks available</p>
+      </div>
+    );
+  }
 
   return (
     <div className="text-white">
@@ -86,6 +99,9 @@ const TrackList: React.FC<TrackListProps> = ({
                 src={track.album.cover_small || track.album.cover}
                 alt={track.album.title}
                 className="w-10 h-10 rounded"
+                onError={(e) => {
+                  e.currentTarget.src = '/placeholder.svg';
+                }}
               />
               <div className="min-w-0">
                 <p className={`font-medium truncate ${

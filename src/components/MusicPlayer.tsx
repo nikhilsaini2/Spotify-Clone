@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Shuffle, Volume, Heart } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Shuffle, Volume, Heart, Music } from 'lucide-react';
 import { useMusic } from '../context/MusicContext';
 
 const MusicPlayer = () => {
   const { state, pauseTrack, resumeTrack, nextTrack, previousTrack, setVolume, seekTo, toggleShuffle, toggleRepeat } = useMusic();
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const [audioError, setAudioError] = useState(false);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -25,8 +26,37 @@ const MusicPlayer = () => {
     setVolume(newVolume);
   };
 
+  const handlePlayPause = () => {
+    console.log('Play/pause clicked, current state:', { 
+      isPlaying: state.isPlaying, 
+      currentTrack: state.currentTrack?.title 
+    });
+    
+    if (state.isPlaying) {
+      pauseTrack();
+    } else {
+      resumeTrack();
+    }
+  };
+
+  useEffect(() => {
+    if (state.currentTrack) {
+      setAudioError(false);
+      console.log('Now playing:', state.currentTrack.title, 'by', state.currentTrack.artist.name);
+    }
+  }, [state.currentTrack]);
+
   if (!state.currentTrack) {
-    return null;
+    return (
+      <div className="fixed bottom-0 left-0 right-0 bg-spotify-medium-gray border-t border-gray-800 p-4 z-50">
+        <div className="max-w-screen-xl mx-auto flex items-center justify-center">
+          <div className="flex items-center space-x-3 text-spotify-light-gray">
+            <Music size={20} />
+            <span>Select a song to start playing</span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -38,6 +68,9 @@ const MusicPlayer = () => {
             src={state.currentTrack.album.cover}
             alt={state.currentTrack.album.title}
             className="w-14 h-14 rounded-lg"
+            onError={(e) => {
+              e.currentTarget.src = '/placeholder.svg';
+            }}
           />
           <div className="min-w-0">
             <p className="text-white font-medium truncate">
@@ -46,6 +79,9 @@ const MusicPlayer = () => {
             <p className="text-spotify-light-gray text-sm truncate">
               {state.currentTrack.artist.name}
             </p>
+            {audioError && (
+              <p className="text-red-400 text-xs">Audio not available</p>
+            )}
           </div>
           <button className="text-spotify-light-gray hover:text-white transition-colors">
             <Heart size={20} />
@@ -72,7 +108,7 @@ const MusicPlayer = () => {
             </button>
 
             <button
-              onClick={state.isPlaying ? pauseTrack : resumeTrack}
+              onClick={handlePlayPause}
               className="bg-white text-black rounded-full p-2 hover:scale-105 transition-transform"
             >
               {state.isPlaying ? <Pause size={20} /> : <Play size={20} />}
@@ -108,7 +144,7 @@ const MusicPlayer = () => {
             >
               <div
                 className="h-full bg-white rounded-full relative group"
-                style={{ width: `${(state.currentTime / state.duration) * 100}%` }}
+                style={{ width: `${state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0}%` }}
               >
                 <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>

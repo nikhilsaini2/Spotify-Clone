@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Shuffle, Volume, Heart, Music } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Shuffle, Volume, Heart, Music, Repeat, Repeat1 } from 'lucide-react';
 import { useMusic } from '../context/MusicContext';
 
 const MusicPlayer = () => {
   const { state, pauseTrack, resumeTrack, nextTrack, previousTrack, setVolume, seekTo, toggleShuffle, toggleRepeat } = useMusic();
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [audioError, setAudioError] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -37,6 +38,19 @@ const MusicPlayer = () => {
     } else {
       resumeTrack();
     }
+  };
+
+  const handleLikeToggle = () => {
+    setIsLiked(!isLiked);
+    // TODO: Add to liked songs in context/database
+    console.log(`${isLiked ? 'Removed from' : 'Added to'} liked songs:`, state.currentTrack?.title);
+  };
+
+  const getRepeatIcon = () => {
+    if (state.repeat === 'one') {
+      return <Repeat1 size={20} />;
+    }
+    return <Repeat size={20} />;
   };
 
   useEffect(() => {
@@ -83,8 +97,13 @@ const MusicPlayer = () => {
               <p className="text-red-400 text-xs">Audio not available</p>
             )}
           </div>
-          <button className="text-spotify-light-gray hover:text-white transition-colors">
-            <Heart size={20} />
+          <button 
+            onClick={handleLikeToggle}
+            className={`transition-colors ${
+              isLiked ? 'text-spotify-green' : 'text-spotify-light-gray hover:text-white'
+            }`}
+          >
+            <Heart size={20} fill={isLiked ? 'currentColor' : 'none'} />
           </button>
         </div>
 
@@ -96,6 +115,7 @@ const MusicPlayer = () => {
               className={`transition-colors ${
                 state.shuffle ? 'text-spotify-green' : 'text-spotify-light-gray hover:text-white'
               }`}
+              title={`Shuffle: ${state.shuffle ? 'On' : 'Off'}`}
             >
               <Shuffle size={20} />
             </button>
@@ -103,6 +123,7 @@ const MusicPlayer = () => {
             <button
               onClick={previousTrack}
               className="text-spotify-light-gray hover:text-white transition-colors"
+              title="Previous"
             >
               <SkipBack size={24} />
             </button>
@@ -110,6 +131,7 @@ const MusicPlayer = () => {
             <button
               onClick={handlePlayPause}
               className="bg-white text-black rounded-full p-2 hover:scale-105 transition-transform"
+              title={state.isPlaying ? 'Pause' : 'Play'}
             >
               {state.isPlaying ? <Pause size={20} /> : <Play size={20} />}
             </button>
@@ -117,6 +139,7 @@ const MusicPlayer = () => {
             <button
               onClick={nextTrack}
               className="text-spotify-light-gray hover:text-white transition-colors"
+              title="Next"
             >
               <SkipForward size={24} />
             </button>
@@ -126,10 +149,9 @@ const MusicPlayer = () => {
               className={`transition-colors ${
                 state.repeat !== 'off' ? 'text-spotify-green' : 'text-spotify-light-gray hover:text-white'
               }`}
+              title={`Repeat: ${state.repeat}`}
             >
-              <span className="text-sm font-bold">
-                {state.repeat === 'one' ? '1' : '↻'}
-              </span>
+              {getRepeatIcon()}
             </button>
           </div>
 
@@ -139,11 +161,11 @@ const MusicPlayer = () => {
               {formatTime(state.currentTime)}
             </span>
             <div
-              className="flex-1 h-1 bg-gray-600 rounded-full cursor-pointer"
+              className="flex-1 h-1 bg-gray-600 rounded-full cursor-pointer group"
               onClick={handleProgressClick}
             >
               <div
-                className="h-full bg-white rounded-full relative group"
+                className="h-full bg-white rounded-full relative"
                 style={{ width: `${state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0}%` }}
               >
                 <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -161,6 +183,7 @@ const MusicPlayer = () => {
             <button
               onClick={() => setShowVolumeSlider(!showVolumeSlider)}
               className="text-spotify-light-gray hover:text-white transition-colors"
+              title="Volume"
             >
               <Volume size={20} />
             </button>

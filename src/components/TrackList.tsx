@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Play, Pause, Heart } from 'lucide-react';
 import { Track } from '../types/music';
 import { useMusic } from '../context/MusicContext';
@@ -18,6 +18,7 @@ const TrackList: React.FC<TrackListProps> = ({
   showAddedDate = false 
 }) => {
   const { state, playTrack, pauseTrack, resumeTrack } = useMusic();
+  const [likedTracks, setLikedTracks] = useState<Set<string>>(new Set());
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -42,8 +43,22 @@ const TrackList: React.FC<TrackListProps> = ({
     }
   };
 
+  const handleLikeTrack = (trackId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newLikedTracks = new Set(likedTracks);
+    if (likedTracks.has(trackId)) {
+      newLikedTracks.delete(trackId);
+      console.log('Removed from liked songs:', trackId);
+    } else {
+      newLikedTracks.add(trackId);
+      console.log('Added to liked songs:', trackId);
+    }
+    setLikedTracks(newLikedTracks);
+  };
+
   const isCurrentTrack = (trackId: string) => state.currentTrack?.id === trackId;
   const isPlaying = (trackId: string) => isCurrentTrack(trackId) && state.isPlaying;
+  const isLiked = (trackId: string) => likedTracks.has(trackId);
 
   if (tracks.length === 0) {
     return (
@@ -144,8 +159,15 @@ const TrackList: React.FC<TrackListProps> = ({
 
             {/* Like Button */}
             <div className="col-span-1 flex items-center justify-end">
-              <button className="opacity-0 group-hover:opacity-100 text-spotify-light-gray hover:text-white transition-all">
-                <Heart size={16} />
+              <button 
+                onClick={(e) => handleLikeTrack(track.id, e)}
+                className={`opacity-0 group-hover:opacity-100 transition-all ${
+                  isLiked(track.id) 
+                    ? 'text-spotify-green opacity-100' 
+                    : 'text-spotify-light-gray hover:text-white'
+                }`}
+              >
+                <Heart size={16} fill={isLiked(track.id) ? 'currentColor' : 'none'} />
               </button>
             </div>
           </div>

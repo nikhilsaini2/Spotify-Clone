@@ -1,73 +1,72 @@
-# Welcome to your Lovable project
+🎧 Spotify Clone – Full-Stack Music Streaming Web App
+A fully responsive and modern music streaming web application inspired by Spotify. Built from the ground up to provide a seamless user experience with powerful features like music playback, playlist management, artist profiles, liking tracks, and more.
 
-## Project info
+🔗 Live Demo
+🌍 Deployed at: Spotify Clone App
+(Hosted link for demonstration purposes)
 
-**URL**: https://lovable.dev/projects/08c6abc7-ab5c-47f1-8687-0371ecc2aac8
+🚀 Tech Stack
+This project uses cutting-edge web technologies:
 
-## How can I edit this code?
+Vite – blazing fast build and dev environment
 
-There are several ways of editing your application.
+TypeScript – for robust, scalable, and type-safe code
 
-**Use Lovable**
+React – component-based architecture for dynamic UI
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/08c6abc7-ab5c-47f1-8687-0371ecc2aac8) and start prompting.
+shadcn/ui – reusable, accessible components
 
-Changes made via Lovable will be committed automatically to this repo.
+Tailwind CSS – utility-first CSS framework for modern design
 
-**Use your preferred IDE**
+📁 Features
+🎵 Music playback with play/pause, shuffle, repeat
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+❤️ Like songs to create your personal collection
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+🔀 Smooth navigation between playlists, albums, and artists
 
-Follow these steps:
+🎙️ Artist and album detail pages
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+🔍 Search for tracks and explore music
+
+📱 Fully responsive UI for all devices
+
+🛠️ Getting Started (Run Locally)
+Make sure Node.js and npm are installed on your machine. Then:
+
+bash
+Copy
+Edit
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Move into the project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
-```
+🌐 Deployment
+This project can be deployed on platforms like Vercel, Netlify, or any static host that supports Vite apps.
 
-**Edit a file directly in GitHub**
+You can also connect a custom domain via your domain provider or hosting platform settings.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+🎯 Planned Improvements
+Add Hindi and regional Indian songs to expand music library
 
-**Use GitHub Codespaces**
+Integrate real-time lyrics and song queue
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Fix shuffle, repeat, and like functionality
 
-## What technologies are used for this project?
+Improve animations and page transitions
 
-This project is built with:
+Support for creating and saving custom playlists
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Enhanced mobile UI/UX
 
-## How can I deploy this project?
+🧑‍💻 About Me
+I'm passionate about building fast, clean, and user-friendly full-stack applications. This project was created as a showcase of my frontend and product-building skills.
 
-Simply open [Lovable](https://lovable.dev/projects/08c6abc7-ab5c-47f1-8687-0371ecc2aac8) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+If you're a recruiter or developer, feel free to connect or reach out. I'm always open to collaboration and new opportunities in the frontend/full-stack space.

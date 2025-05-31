@@ -1,9 +1,14 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { MusicProvider } from "./context/MusicContext";
+import Sidebar from "./components/Sidebar";
+import MusicPlayer from "./components/MusicPlayer";
 import Index from "./pages/Index";
+import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -11,15 +16,28 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <MusicProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <div className="flex h-screen bg-spotify-black overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto pb-24">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/library" element={<div className="p-8 text-white">Library - Coming Soon!</div>} />
+                <Route path="/create-playlist" element={<div className="p-8 text-white">Create Playlist - Coming Soon!</div>} />
+                <Route path="/liked-songs" element={<div className="p-8 text-white">Liked Songs - Coming Soon!</div>} />
+                <Route path="/artist/:id" element={<div className="p-8 text-white">Artist Page - Coming Soon!</div>} />
+                <Route path="/album/:id" element={<div className="p-8 text-white">Album Page - Coming Soon!</div>} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+            <MusicPlayer />
+          </div>
+        </BrowserRouter>
+      </MusicProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
